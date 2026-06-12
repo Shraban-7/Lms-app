@@ -14,6 +14,14 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        
+        if ($user->isInstructor()) {
+            return redirect()->route('instructor.dashboard');
+        }
+        
         // Find courses they have started (have at least one completion or attempt)
         // For simplicity and ease of testing, we will list all published courses,
         // and calculate progress for each, highlighting courses in progress.

@@ -27,7 +27,10 @@ class InstructorController extends Controller
             
         $lifetimeEarnings = $totalApproved + $user->payout_balance;
 
-        return view('instructor.dashboard', compact('user', 'payouts', 'lifetimeEarnings', 'totalApproved'));
+        // Fetch instructor's courses with lesson counts
+        $courses = $user->courses()->withCount('lessons')->get();
+
+        return view('instructor.dashboard', compact('user', 'payouts', 'lifetimeEarnings', 'totalApproved', 'courses'));
     }
 
     public function requestPayout(Request $request)

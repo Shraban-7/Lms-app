@@ -49,18 +49,20 @@
 
             <ul class="flex items-center space-x-1">
                 @auth
-                    <li><a href="{{ route('dashboard') }}"
-                            class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Dashboard</a>
-                    </li>
-                    @if (auth()->user()->isInstructor())
-                        <li><a href="{{ route('builder.index') }}"
-                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('builder.*') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Course Builder</a></li>
-                        <li><a href="{{ route('instructor.dashboard') }}"
-                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('instructor.dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Instructor Payouts</a></li>
-                    @endif
                     @if (auth()->user()->isAdmin())
                         <li><a href="{{ route('admin.dashboard') }}"
-                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('admin.dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Admin Panel</a></li>
+                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('admin.dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Dashboard</a>
+                        </li>
+                    @elseif (auth()->user()->isInstructor())
+                        <li><a href="{{ route('instructor.dashboard') }}"
+                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('instructor.dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Dashboard</a>
+                        </li>
+                        <li><a href="{{ route('builder.index') }}"
+                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('builder.*') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Course Builder</a></li>
+                    @else
+                        <li><a href="{{ route('dashboard') }}"
+                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100/50 dark:hover:bg-white/5' }}">Dashboard</a>
+                        </li>
                     @endif
                     <li class="pl-2">
                         <form action="{{ route('logout') }}" method="POST" class="inline">
