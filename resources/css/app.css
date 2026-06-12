@@ -1,0 +1,265 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+@theme {
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+    /* Theme-specific custom colors mapped to dynamic base CSS properties */
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+
+    --color-surface: var(--bg-surface);
+    --color-surface-solid: var(--bg-surface-solid);
+    --color-border: var(--border-color);
+
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+
+    --shadow-card: var(--shadow-main);
+    --shadow-glow: var(--shadow-glow);
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@layer base {
+    :root {
+        --bg-main: #f9fafb;
+        --bg-surface: rgba(255, 255, 255, 0.7);
+        --bg-surface-solid: #ffffff;
+        --border-color: rgba(0, 0, 0, 0.06);
+        --border-glow: rgba(99, 102, 241, 0.1);
+
+        --text-primary: #1f2937;
+        --text-secondary: #4b5563;
+        --text-muted: #9ca3af;
+
+        --primary: #4f46e5;
+        --primary-hover: #3730a3;
+        --primary-glow: rgba(79, 70, 229, 0.2);
+
+        --shadow-main: 0 10px 35px -12px rgba(0, 0, 0, 0.1);
+        --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.05);
+
+        --glass-blur: blur(12px);
+    }
+
+    [data-theme="dark"] {
+        --bg-main: #0b0f19;
+        --bg-surface: rgba(20, 26, 45, 0.6);
+        --bg-surface-solid: #141a2d;
+        --border-color: rgba(255, 255, 255, 0.08);
+        --border-glow: rgba(99, 102, 241, 0.15);
+
+        --text-primary: #f3f4f6;
+        --text-secondary: #9ca3af;
+        --text-muted: #6b7280;
+
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --primary-glow: rgba(99, 102, 241, 0.4);
+
+        --shadow-main: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+        --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        line-height: 1.5;
+        overflow-x: hidden;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+}
+
+/* Scrollbar Style */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Glow Effect Backdrops */
+.glow-backdrop-1 {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 60vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(0,0,0,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+.glow-backdrop-2 {
+    position: fixed;
+    bottom: -10%;
+    right: -10%;
+    width: 50vw;
+    height: 50vh;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(0,0,0,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Custom Video Player styles */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-main);
+}
+.custom-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.video-wrapper:hover .video-controls {
+    opacity: 1;
+}
+.video-progress-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+}
+.video-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    border-radius: 4px;
+}
+.video-buttons-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #FFF;
+}
+.video-controls-left, .video-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.video-btn {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Certificate layout - elegant & printable */
+.certificate-preview-box {
+    background: #FFF;
+    color: #111;
+    border: 15px solid #141A2D;
+    padding: 4rem;
+    border-radius: 4px;
+    text-align: center;
+    position: relative;
+    max-width: 850px;
+    margin: 3rem auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    font-family: 'Georgia', serif;
+}
+.certificate-preview-box::before {
+    content: '';
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 2px solid var(--primary);
+    pointer-events: none;
+}
+.cert-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #141A2D;
+    margin-bottom: 1.5rem;
+}
+.cert-subtitle {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+.cert-recipient {
+    font-size: 2.2rem;
+    font-weight: bold;
+    border-bottom: 2px solid #333;
+    display: inline-block;
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.cert-details {
+    font-size: 1.1rem;
+    color: #444;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.8;
+}
+.cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 3rem;
+}
+.cert-sig-block {
+    border-top: 1px solid #999;
+    padding-top: 0.5rem;
+    width: 200px;
+}
+.cert-badge-gold {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #F9D976 0%, #E9B646 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.75rem;
+    color: #141A2D;
+    border: 4px double #FFF;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
