@@ -31,7 +31,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
     
     <!-- Left Section: Main Tree Hierarchy -->
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6 builder-tree-container">
         
         @if($course->modules->isEmpty())
             <div class="bg-white/70 dark:bg-surface/60 backdrop-blur-xl border border-gray-200 dark:border-border rounded-[14px] p-8 md:p-16 text-center text-text-secondary shadow-sm dark:shadow-card">
@@ -43,7 +43,7 @@
             </div>
         @else
             @foreach($course->modules as $modIndex => $module)
-                <div class="bg-white/70 dark:bg-surface/60 backdrop-blur-xl border border-gray-200 dark:border-border rounded-[14px] p-6 shadow-sm dark:shadow-card hover:border-primary/50 transition-all duration-200" id="module-{{ $module->id }}">
+                <div class="bg-white/70 dark:bg-surface/60 backdrop-blur-xl border border-gray-200 dark:border-border rounded-[14px] p-6 shadow-sm dark:shadow-card hover:border-primary/30 transition-all duration-200" id="module-{{ $module->id }}">
                     <!-- Module Header -->
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-border gap-4">
                         <div>
@@ -59,69 +59,75 @@
                         </div>
                     </div>
 
-                    <!-- Lessons List inside Module -->
-                    <div class="flex flex-col gap-3">
-                        @if($module->lessons->isEmpty())
-                            <p class="text-text-muted text-sm italic py-2">No lessons in this module yet.</p>
-                        @else
+                    <!-- Lessons List inside Module with Timeline Connector Line -->
+                    @if($module->lessons->isEmpty())
+                        <p class="text-text-muted text-sm italic py-2 pl-2">No lessons in this module yet.</p>
+                    @else
+                        <div class="relative ml-5 pl-6 border-l-2 border-dashed border-gray-200 dark:border-border/60 flex flex-col gap-4 my-2">
                             @foreach($module->lessons as $lesIndex => $lesson)
-                                <div class="bg-surface-solid border border-gray-200 dark:border-border rounded-lg p-4 flex flex-col gap-3.5" id="lesson-{{ $lesson->id }}">
-                                    <div class="flex items-center justify-between gap-4">
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-xs text-text-muted">{{ $modIndex + 1 }}.{{ $lesIndex + 1 }}</span>
-                                            
-                                            <!-- Type Badge -->
-                                            @if($lesson->type === 'video')
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary">Video</span>
-                                            @elseif($lesson->type === 'quiz')
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-success/15 text-success">Quiz</span>
-                                            @else
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 dark:bg-border text-text-secondary">Text</span>
-                                            @endif
-
-                                            <strong class="text-sm font-semibold text-text-primary">{{ $lesson->title }}</strong>
-                                        </div>
-
-                                        <!-- Ordering & details -->
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-xs text-text-muted mr-1.5">{{ $lesson->duration_minutes }} min</span>
-                                            <button onclick="reorderItem('lesson', {{ $lesson->id }}, 'up', {{ $module->id }})" class="inline-flex items-center justify-center w-6 h-6 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-[10px] font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">▲</button>
-                                            <button onclick="reorderItem('lesson', {{ $lesson->id }}, 'down', {{ $module->id }})" class="inline-flex items-center justify-center w-6 h-6 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-[10px] font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">▼</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- If Lesson is Quiz: show questions & add question controls -->
-                                    @if($lesson->type === 'quiz' && $lesson->quiz)
-                                        <div class="mt-2 bg-[#0b0f19]/20 border border-gray-200 dark:border-border rounded-lg p-4">
-                                            <div class="flex items-center justify-between pb-2 mb-3 border-b border-dashed border-gray-200 dark:border-border gap-4">
-                                                <span class="text-xs font-bold text-text-secondary">Quiz: <strong class="text-text-primary">{{ $lesson->quiz->title }}</strong> (Passing: {{ $lesson->quiz->passing_score }}%, Weight: {{ $lesson->quiz->weight }})</span>
-                                                <button onclick="openQuestionModal({{ $lesson->quiz->id }})" class="inline-flex items-center justify-center px-2.5 py-1 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-xs font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">+ Add Question</button>
-                                            </div>
-
-                                            <!-- Quiz Questions List -->
-                                            <div class="flex flex-col gap-2.5">
-                                                @if($lesson->quiz->questions->isEmpty())
-                                                    <p class="text-text-muted text-xs italic">No questions added yet.</p>
+                                <div class="relative group/lesson" id="lesson-{{ $lesson->id }}">
+                                    <!-- Timeline Node & Connector Line -->
+                                    <div class="absolute -left-6 top-[22px] w-6 h-[2px] bg-gray-200 dark:bg-border/60 group-hover/lesson:bg-primary/50 transition-colors duration-300"></div>
+                                    <div class="absolute -left-[31px] top-[16px] w-3 h-3 rounded-full border-2 border-gray-300 dark:border-border bg-surface-solid group-hover/lesson:border-primary shadow-[0_0_8px_rgba(0,0,0,0.05)] group-hover/lesson:shadow-[0_0_12px_var(--primary-glow)] transition-all duration-300 z-10"></div>
+                                    
+                                    <div class="bg-surface-solid border border-gray-200 dark:border-border rounded-lg p-4 flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-[0_4px_12px_rgba(0,0,0,0.02)] transition-all duration-300">
+                                        <div class="flex items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xs text-text-muted">{{ $modIndex + 1 }}.{{ $lesIndex + 1 }}</span>
+                                                
+                                                <!-- Type Badge -->
+                                                @if($lesson->type === 'video')
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary">Video</span>
+                                                @elseif($lesson->type === 'quiz')
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-success/15 text-success">Quiz</span>
                                                 @else
-                                                    @foreach($lesson->quiz->questions as $qIndex => $question)
-                                                        <div class="text-xs p-3 rounded bg-white/50 dark:bg-surface/50 border border-gray-200 dark:border-border flex flex-col gap-1.5">
-                                                            <div class="flex justify-between items-start gap-4">
-                                                                <strong class="font-bold text-text-primary">Q{{ $qIndex + 1 }}: {{ $question->question_text }}</strong>
-                                                                <span class="text-primary font-bold whitespace-nowrap">{{ $question->points }} pts ({{ str_replace('_', ' ', $question->type) }})</span>
-                                                            </div>
-                                                            <div class="text-[10px] text-text-secondary mt-1">
-                                                                Correct answer(s): <code class="font-mono bg-white dark:bg-surface-solid px-1 py-0.5 rounded border border-gray-150 dark:border-border text-text-primary">{{ implode(', ', $question->correct_answers) }}</code>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 dark:bg-border text-text-secondary">Text</span>
                                                 @endif
+
+                                                <strong class="text-sm font-semibold text-text-primary">{{ $lesson->title }}</strong>
+                                            </div>
+
+                                            <!-- Ordering & details -->
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="text-xs text-text-muted mr-1.5">{{ $lesson->duration_minutes }} min</span>
+                                                <button onclick="reorderItem('lesson', {{ $lesson->id }}, 'up', {{ $module->id }})" class="inline-flex items-center justify-center w-6 h-6 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-[10px] font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">▲</button>
+                                                <button onclick="reorderItem('lesson', {{ $lesson->id }}, 'down', {{ $module->id }})" class="inline-flex items-center justify-center w-6 h-6 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-[10px] font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">▼</button>
                                             </div>
                                         </div>
-                                    @endif
+
+                                        <!-- If Lesson is Quiz: show questions & add question controls -->
+                                        @if($lesson->type === 'quiz' && $lesson->quiz)
+                                            <div class="mt-2 bg-[#0b0f19]/20 border border-gray-200 dark:border-border rounded-lg p-4">
+                                                <div class="flex items-center justify-between pb-2 mb-3 border-b border-dashed border-gray-200 dark:border-border gap-4">
+                                                    <span class="text-xs font-bold text-text-secondary">Quiz: <strong class="text-text-primary">{{ $lesson->quiz->title }}</strong> (Passing: {{ $lesson->quiz->passing_score }}%, Weight: {{ $lesson->quiz->weight }})</span>
+                                                    <button onclick="openQuestionModal({{ $lesson->quiz->id }})" class="inline-flex items-center justify-center px-2.5 py-1 bg-surface-solid border border-gray-200 dark:border-border text-text-primary text-xs font-semibold rounded hover:bg-gray-100 dark:hover:bg-border transition-all duration-300 cursor-pointer">+ Add Question</button>
+                                                </div>
+
+                                                <!-- Quiz Questions List -->
+                                                <div class="flex flex-col gap-2.5">
+                                                    @if($lesson->quiz->questions->isEmpty())
+                                                        <p class="text-text-muted text-xs italic">No questions added yet.</p>
+                                                    @else
+                                                        @foreach($lesson->quiz->questions as $qIndex => $question)
+                                                            <div class="text-xs p-3 rounded bg-white/50 dark:bg-surface/50 border border-gray-200 dark:border-border flex flex-col gap-1.5">
+                                                                <div class="flex justify-between items-start gap-4">
+                                                                    <strong class="font-bold text-text-primary">Q{{ $qIndex + 1 }}: {{ $question->question_text }}</strong>
+                                                                    <span class="text-primary font-bold whitespace-nowrap">{{ $question->points }} pts ({{ str_replace('_', ' ', $question->type) }})</span>
+                                                                </div>
+                                                                <div class="text-[10px] text-text-secondary mt-1">
+                                                                    Correct answer(s): <code class="font-mono bg-white dark:bg-surface-solid px-1 py-0.5 rounded border border-gray-150 dark:border-border text-text-primary">{{ implode(', ', $question->correct_answers) }}</code>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
             @endforeach
         @endif
@@ -152,8 +158,8 @@
 </div>
 
 <!-- Add Lesson Modal -->
-<div id="lessonModal" style="display: none;" class="fixed inset-0 bg-black/60 z-[100] backdrop-blur-md items-center justify-center p-4">
-    <div class="bg-white dark:bg-surface-solid border border-gray-200 dark:border-border rounded-[14px] p-6 shadow-xl w-full max-w-[550px] max-h-[90vh] overflow-y-auto">
+<div id="lessonModal" style="display: none;" class="fixed inset-0 bg-black/65 z-[100] backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-white/95 dark:bg-[#141A2D]/95 backdrop-blur-xl border border-gray-200 dark:border-border rounded-[20px] p-6 md:p-8 shadow-2xl w-full max-w-[550px] max-h-[90vh] overflow-y-auto">
         <h3 class="text-xl font-extrabold text-text-primary mb-6" id="lessonModalTitle">Add Lesson</h3>
         
         <form id="lessonForm" method="POST" action="">
@@ -197,8 +203,8 @@
 </div>
 
 <!-- Add Question Modal -->
-<div id="questionModal" style="display: none;" class="fixed inset-0 bg-black/60 z-[100] backdrop-blur-md items-center justify-center p-4">
-    <div class="bg-white dark:bg-surface-solid border border-gray-200 dark:border-border rounded-[14px] p-6 shadow-xl w-full max-w-[550px] max-h-[90vh] overflow-y-auto">
+<div id="questionModal" style="display: none;" class="fixed inset-0 bg-black/65 z-[100] backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-white/95 dark:bg-[#141A2D]/95 backdrop-blur-xl border border-gray-200 dark:border-border rounded-[20px] p-6 md:p-8 shadow-2xl w-full max-w-[550px] max-h-[90vh] overflow-y-auto">
         <h3 class="text-xl font-extrabold text-text-primary mb-6">Add Quiz Question</h3>
         
         <form id="questionForm" method="POST" action="">

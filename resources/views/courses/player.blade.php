@@ -115,7 +115,7 @@
             <!-- Video Player viewport -->
             @if ($lesson->type === 'video')
                 <div class="video-wrapper">
-                    <video class="custom-video" id="courseVideo" controls src="{{ $lesson->video_url }}"></video>
+                    <video class="custom-video" id="courseVideo" src="{{ $lesson->video_url }}"></video>
                     <!-- Custom controls overlay styled by Vanilla CSS -->
                     <div class="video-controls" id="customVideoControls">
                         <div class="video-progress-container" id="videoProgress">

@@ -16,8 +16,11 @@
     --color-accent: var(--accent);
     --color-accent-hover: var(--accent-hover);
     --color-success: #10b981;
+    --color-success-hover: #059669;
     --color-warning: #f59e0b;
+    --color-warning-hover: #d97706;
     --color-danger: #ef4444;
+    --color-danger-hover: #dc2626;
 
     --color-surface: var(--bg-surface);
     --color-surface-solid: var(--bg-surface-solid);
@@ -135,6 +138,7 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-main);
+    border: 1px solid var(--border-color);
 }
 .custom-video {
     width: 100%;
@@ -146,30 +150,56 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
-    padding: 1rem;
+    background: linear-gradient(0deg, rgba(11, 15, 25, 0.9) 0%, rgba(11, 15, 25, 0.4) 60%, rgba(11, 15, 25, 0) 100%);
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 20;
 }
-.video-wrapper:hover .video-controls {
+.video-wrapper:hover .video-controls,
+.video-wrapper:focus-within .video-controls {
     opacity: 1;
+    pointer-events: auto;
 }
 .video-progress-container {
     width: 100%;
-    height: 6px;
-    background: rgba(255,255,255,0.3);
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 2px;
     position: relative;
+    transition: height 0.2s ease;
+}
+.video-progress-container:hover {
+    height: 8px;
 }
 .video-progress-bar {
     height: 100%;
-    background: var(--primary);
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
     width: 0%;
-    border-radius: 4px;
+    border-radius: 2px;
+    position: relative;
+    transition: width 0.1s linear;
+}
+.video-progress-bar::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 12px;
+    height: 12px;
+    background: #FFF;
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary);
+    transition: transform 0.2s ease;
+}
+.video-progress-container:hover .video-progress-bar::after {
+    transform: translateY(-50%) scale(1);
 }
 .video-buttons-row {
     display: flex;
@@ -180,12 +210,24 @@
 .video-controls-left, .video-controls-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 .video-btn {
     cursor: pointer;
-    font-weight: bold;
-    font-size: 1.1rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+.video-btn:hover {
+    color: #FFF;
+    transform: scale(1.05);
+}
+.video-btn:active {
+    transform: scale(0.95);
 }
 
 /* Certificate layout - elegant & printable */
