@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->role === 'student';
     }
 
+    public function isModerator(): bool
+    {
+        return $this->role === 'moderator';
+    }
+
     public function courses()
     {
         return $this->hasMany(Course::class, 'instructor_id');

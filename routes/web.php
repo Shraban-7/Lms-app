@@ -72,4 +72,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/payouts/{payout}/approve', [AdminController::class, 'approvePayout'])->name('admin.payouts.approve');
     Route::post('/admin/payouts/{payout}/reject', [AdminController::class, 'rejectPayout'])->name('admin.payouts.reject');
+    
+    // Moderation & Site Settings
+    Route::delete('/admin/courses/{course}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+    Route::post('/admin/users/{user}/update-role', [AdminController::class, 'updateUserRole'])->name('admin.users.update-role');
+    Route::post('/admin/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 });
